@@ -15,6 +15,12 @@ internal class MandelKUT : Form
         Graphics gr = pea.Graphics;
         gr.FillEllipse(Brushes.Blue, 20, 20, 50, 50);
     }
+
+    private void InitializeComponent()
+    {
+
+    }
+
     public static void Main()
     {
         Application.Run(new MandelKUT());
