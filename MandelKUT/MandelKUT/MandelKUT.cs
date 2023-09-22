@@ -8,7 +8,6 @@ using System.Diagnostics;
 internal class MandelKUT : Form
 {
 
-    int counter = 0;
     int size = 1080;
     Bitmap plaatje;
     Button renderKnop;
@@ -20,7 +19,7 @@ internal class MandelKUT : Form
         renderKnop = new Button(); Controls.Add(renderKnop); renderKnop.Location = new Point(110, 110);
         plaatje = new Bitmap(size/2, size/2);
         this.Text = "MandelKUT";
-        this.BackColor = Color.LightBlue;
+        this.BackColor = Color.Aqua;
         this.ClientSize = new Size(size, size);
         this.Paint += this.Teken;
 
@@ -38,8 +37,7 @@ internal class MandelKUT : Form
             ///als het kleiner is dan 4 stopt het anders gaat het door met calculeren
             if(za*za + zb*zb > 4)
             {
-                counter = i;
-                return counter;
+                return i;
             }
             double tempZa = za;
             za = za*za - zb*zb + ca;
@@ -60,24 +58,34 @@ internal class MandelKUT : Form
     {
         Stopwatch sw = Stopwatch.StartNew();
         Graphics gr = pea.Graphics;
-        for(int i = 0; i<plaatje.Width; i++)
+        double factor = 20 * (1 + schaal);
+        //double tussenstap = size / (4 * factor);//
+        for (int i = 0; i<plaatje.Width; i++)
         {
-            for(int j=0; j<plaatje.Height; j++)
+            
+            for (int j=0; j<plaatje.Height; j++)
             {
                 double x = i;
-                double y = j;
-                int factor = 20*(1+schaal);
-
-                x = (x- size/4)/factor;
+                x = (x - size / 4) / factor;
+                //x = x/factor-tussenstap//
+                double y = j;               
                 y = (y- size/4)/factor;
-                if(Divergerent(x+1, y, iteraties)%2==1)
-                {
-                    plaatje.SetPixel(i, j, Color.Aqua);
-                }
-                else
+
+                int q = Divergerent(x + 0.5, y, iteraties);
+                //y=y/factor-tussenstap//
+                if (q%2==0)
                 {
                     plaatje.SetPixel(i, j, Color.Pink);
                 }
+                else if (q%3==0)
+                {
+                    plaatje.SetPixel(i, j, Color.Aqua);
+                }
+                else if (q%5==0)
+                {
+                    plaatje.SetPixel(i, j, Color.Black);
+                }
+
             }
         }
         gr.DrawImage(plaatje,size/8,size/8);
