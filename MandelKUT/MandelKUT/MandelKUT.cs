@@ -11,20 +11,20 @@ internal class MandelKUT : Form
     int counter = 0;
     int size = 1080;
     Bitmap plaatje;
-    Button schaalKnop;
-    TextBox t;
-    int schaal;
+    Button renderKnop;
+    TextBox t, t2;
+    int schaal; int iteraties;
     public MandelKUT()
     {
-        t = new TextBox(); Controls.Add(t);
-        schaalKnop = new Button(); Controls.Add(schaalKnop); schaalKnop.Location = new Point(110, 110);
-        plaatje = new Bitmap(size, size);
+        t = new TextBox(); Controls.Add(t); t2 = new TextBox(); Controls.Add(t2); t2.Location = new Point(40, 40);
+        renderKnop = new Button(); Controls.Add(renderKnop); renderKnop.Location = new Point(110, 110);
+        plaatje = new Bitmap(size/2, size/2);
         this.Text = "MandelKUT";
         this.BackColor = Color.LightBlue;
         this.ClientSize = new Size(size, size);
         this.Paint += this.Teken;
 
-        schaalKnop.Click += schaalKnop_Click;
+        renderKnop.Click += renderKnop_Click;
     }
 
 
@@ -48,9 +48,10 @@ internal class MandelKUT : Form
         return 0;
     }
 
-    void schaalKnop_Click(object o, EventArgs e)
+    void renderKnop_Click(object o, EventArgs e)
     {
         schaal = int.Parse(t.Text);
+        iteraties = int.Parse(t2.Text);
         Console.WriteLine(schaal.ToString());
         Invalidate();
     }
@@ -67,9 +68,9 @@ internal class MandelKUT : Form
                 double y = j;
                 int factor = 20*(1+schaal);
 
-                x = (x- size/2)/factor;
-                y = (y- size/2)/factor;
-                if(Divergerent(x, y, 5000)%2==1)
+                x = (x- size/4)/factor;
+                y = (y- size/4)/factor;
+                if(Divergerent(x+1, y, iteraties)%2==1)
                 {
                     plaatje.SetPixel(i, j, Color.Aqua);
                 }
@@ -79,7 +80,7 @@ internal class MandelKUT : Form
                 }
             }
         }
-        gr.DrawImage(plaatje,0,0);
+        gr.DrawImage(plaatje,size/8,size/8);
         sw.Stop();
         Console.WriteLine(sw.Elapsed.ToString());
         
