@@ -3,12 +3,13 @@ using System.Windows.Forms;
 using System;
 using System.Diagnostics.Tracing;
 using System.Runtime.ConstrainedExecution;
+using System.Diagnostics;
 
 internal class MandelKUT : Form
 {
     int counter = 0;
     Form scherm = new Form();
-    int size = 2160;
+    int size = 1080;
     Label afbeelding = new Label();
     Bitmap plaatje;
     public MandelKUT()
@@ -44,6 +45,7 @@ internal class MandelKUT : Form
 
     public void Teken(object o, PaintEventArgs pea)
     {
+        Stopwatch sw = Stopwatch.StartNew();
         Graphics gr = pea.Graphics;
         for(int i = 0; i<plaatje.Width; i++)
         {
@@ -55,7 +57,7 @@ internal class MandelKUT : Form
 
                 x = (x- size/2)/factor;
                 y = (y- size/2)/factor;
-                if(Divergerent(x, y, 500)%2==1)
+                if(Divergerent(x, y, 5000)%2==1)
                 {
                     plaatje.SetPixel(i, j, Color.Aqua);
                 }
@@ -66,6 +68,8 @@ internal class MandelKUT : Form
             }
         }
         gr.DrawImage(plaatje,0,0);
+        sw.Stop();
+        Console.WriteLine(sw.Elapsed.ToString());
     }
 
     private void InitializeComponent()
