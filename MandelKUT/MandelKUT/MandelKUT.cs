@@ -7,19 +7,24 @@ using System.Diagnostics;
 
 internal class MandelKUT : Form
 {
+
     int counter = 0;
-    Form scherm = new Form();
     int size = 1080;
-    Label afbeelding = new Label();
     Bitmap plaatje;
+    Button schaalKnop;
+    TextBox t;
+    int schaal;
     public MandelKUT()
     {
+        t = new TextBox(); Controls.Add(t);
+        schaalKnop = new Button(); Controls.Add(schaalKnop); schaalKnop.Location = new Point(110, 110);
         plaatje = new Bitmap(size, size);
         this.Text = "MandelKUT";
         this.BackColor = Color.LightBlue;
         this.ClientSize = new Size(size, size);
         this.Paint += this.Teken;
 
+        schaalKnop.Click += schaalKnop_Click;
     }
 
 
@@ -43,6 +48,13 @@ internal class MandelKUT : Form
         return 0;
     }
 
+    void schaalKnop_Click(object o, EventArgs e)
+    {
+        schaal = int.Parse(t.Text);
+        Console.WriteLine(schaal.ToString());
+        Invalidate();
+    }
+
     public void Teken(object o, PaintEventArgs pea)
     {
         Stopwatch sw = Stopwatch.StartNew();
@@ -53,7 +65,7 @@ internal class MandelKUT : Form
             {
                 double x = i;
                 double y = j;
-                int factor = 200;
+                int factor = 20*(1+schaal);
 
                 x = (x- size/2)/factor;
                 y = (y- size/2)/factor;
@@ -70,15 +82,19 @@ internal class MandelKUT : Form
         gr.DrawImage(plaatje,0,0);
         sw.Stop();
         Console.WriteLine(sw.Elapsed.ToString());
+        
     }
 
     private void InitializeComponent()
     {
-
     }
+    
+    
 
+    
     public static void Main()
     {
         Application.Run(new MandelKUT());
+        
     }
 }
