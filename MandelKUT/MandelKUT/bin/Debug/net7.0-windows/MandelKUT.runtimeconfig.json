@@ -10,13 +10,6 @@
         "name": "Microsoft.WindowsDesktop.App",
         "version": "7.0.0"
       }
-    ],
-    "additionalProbingPaths": [
-      "C:\\Users\\feste\\.dotnet\\store\\|arch|\\|tfm|",
-      "C:\\Users\\feste\\.nuget\\packages"
-    ],
-    "configProperties": {
-      "Microsoft.NETCore.DotNetHostPolicy.SetAppPaths": true
-    }
+    ]
   }
 }
