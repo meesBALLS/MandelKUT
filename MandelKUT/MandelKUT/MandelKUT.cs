@@ -6,19 +6,21 @@ using System.Runtime.ConstrainedExecution;
 
 internal class MandelKUT : Form
 {
+    int counter = 0;
+    Form scherm = new Form();
+    int size = 2160;
+    Label afbeelding = new Label();
+    Bitmap plaatje;
     public MandelKUT()
     {
+        plaatje = new Bitmap(size, size);
         this.Text = "MandelKUT";
-        this.BackColor = Color.White;
-        this.ClientSize = new Size(400, 400);
+        this.BackColor = Color.LightBlue;
+        this.ClientSize = new Size(size, size);
         this.Paint += this.Teken;
 
     }
-    int counter = 0;
-    Form scherm = new Form();
 
-    Bitmap plaatje = new Bitmap(400, 400);
-    Label afbeelding = new Label();
 
 
     public int Divergerent(double ca, double cb, int max_iter = 50)
@@ -28,13 +30,14 @@ internal class MandelKUT : Form
         for (int i = 0; i < max_iter; i++)
         { 
             ///als het kleiner is dan 4 stopt het anders gaat het door met calculeren
-            if(Math.Pow(ca, 2) + Math.Pow(cb, 2) > 4)
+            if(za*za + zb*zb > 4)
             {
                 counter = i;
                 return counter;
             }
-            za = Math.Pow(za, 2) - Math.Pow(zb, 2) + ca;
-            zb = 2 * za * zb + cb;
+            double tempZa = za;
+            za = za*za - zb*zb + ca;
+            zb = 2 * tempZa * zb + cb;
         }
         return 0;
     }
@@ -46,17 +49,23 @@ internal class MandelKUT : Form
         {
             for(int j=0; j<plaatje.Height; j++)
             {
-                if(Divergerent(i,j,50)%2==0)
+                double x = i;
+                double y = j;
+                int factor = 200;
+
+                x = (x- size/2)/factor;
+                y = (y- size/2)/factor;
+                if(Divergerent(x, y, 500)%2==1)
                 {
-                    plaatje.SetPixel(i, j, Color.White);
+                    plaatje.SetPixel(i, j, Color.Aqua);
                 }
-                if (Divergerent(i, j, 50) % 2 != 0)
+                else
                 {
-                    plaatje.SetPixel(i, j, Color.Black);
+                    plaatje.SetPixel(i, j, Color.Pink);
                 }
             }
         }
-
+        gr.DrawImage(plaatje,0,0);
     }
 
     private void InitializeComponent()

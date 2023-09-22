@@ -14,3 +14,19 @@ C:\Users\feste\OneDrive - Nuovo\Bureaublad\fedde school\universiteit\leerjaar 1\
 C:\Users\feste\OneDrive - Nuovo\Bureaublad\fedde school\universiteit\leerjaar 1\informatica c#\impratief\MandelKUT\MandelKUT\MandelKUT\obj\Debug\net7.0-windows\MandelKUT.pdb
 C:\Users\feste\OneDrive - Nuovo\Bureaublad\fedde school\universiteit\leerjaar 1\informatica c#\impratief\MandelKUT\MandelKUT\MandelKUT\obj\Debug\net7.0-windows\MandelKUT.genruntimeconfig.cache
 C:\Users\feste\OneDrive - Nuovo\Bureaublad\fedde school\universiteit\leerjaar 1\informatica c#\impratief\MandelKUT\MandelKUT\MandelKUT\obj\Debug\net7.0-windows\ref\MandelKUT.dll
+C:\Users\Meesv\Bureaublad\INFORMATICA_SHIT\scripts\saampjes\MandelKUT\MandelKUT\MandelKUT\bin\Debug\net7.0-windows\MandelKUT.exe
+C:\Users\Meesv\Bureaublad\INFORMATICA_SHIT\scripts\saampjes\MandelKUT\MandelKUT\MandelKUT\bin\Debug\net7.0-windows\MandelKUT.deps.json
+C:\Users\Meesv\Bureaublad\INFORMATICA_SHIT\scripts\saampjes\MandelKUT\MandelKUT\MandelKUT\bin\Debug\net7.0-windows\MandelKUT.runtimeconfig.json
+C:\Users\Meesv\Bureaublad\INFORMATICA_SHIT\scripts\saampjes\MandelKUT\MandelKUT\MandelKUT\bin\Debug\net7.0-windows\MandelKUT.dll
+C:\Users\Meesv\Bureaublad\INFORMATICA_SHIT\scripts\saampjes\MandelKUT\MandelKUT\MandelKUT\bin\Debug\net7.0-windows\MandelKUT.pdb
+C:\Users\Meesv\Bureaublad\INFORMATICA_SHIT\scripts\saampjes\MandelKUT\MandelKUT\MandelKUT\obj\Debug\net7.0-windows\MandelKUT.resources
+C:\Users\Meesv\Bureaublad\INFORMATICA_SHIT\scripts\saampjes\MandelKUT\MandelKUT\MandelKUT\obj\Debug\net7.0-windows\MandelKUT.csproj.GenerateResource.cache
+C:\Users\Meesv\Bureaublad\INFORMATICA_SHIT\scripts\saampjes\MandelKUT\MandelKUT\MandelKUT\obj\Debug\net7.0-windows\MandelKUT.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Meesv\Bureaublad\INFORMATICA_SHIT\scripts\saampjes\MandelKUT\MandelKUT\MandelKUT\obj\Debug\net7.0-windows\MandelKUT.AssemblyInfoInputs.cache
+C:\Users\Meesv\Bureaublad\INFORMATICA_SHIT\scripts\saampjes\MandelKUT\MandelKUT\MandelKUT\obj\Debug\net7.0-windows\MandelKUT.AssemblyInfo.cs
+C:\Users\Meesv\Bureaublad\INFORMATICA_SHIT\scripts\saampjes\MandelKUT\MandelKUT\MandelKUT\obj\Debug\net7.0-windows\MandelKUT.csproj.CoreCompileInputs.cache
+C:\Users\Meesv\Bureaublad\INFORMATICA_SHIT\scripts\saampjes\MandelKUT\MandelKUT\MandelKUT\obj\Debug\net7.0-windows\MandelKUT.dll
+C:\Users\Meesv\Bureaublad\INFORMATICA_SHIT\scripts\saampjes\MandelKUT\MandelKUT\MandelKUT\obj\Debug\net7.0-windows\refint\MandelKUT.dll
+C:\Users\Meesv\Bureaublad\INFORMATICA_SHIT\scripts\saampjes\MandelKUT\MandelKUT\MandelKUT\obj\Debug\net7.0-windows\MandelKUT.pdb
+C:\Users\Meesv\Bureaublad\INFORMATICA_SHIT\scripts\saampjes\MandelKUT\MandelKUT\MandelKUT\obj\Debug\net7.0-windows\MandelKUT.genruntimeconfig.cache
+C:\Users\Meesv\Bureaublad\INFORMATICA_SHIT\scripts\saampjes\MandelKUT\MandelKUT\MandelKUT\obj\Debug\net7.0-windows\ref\MandelKUT.dll
