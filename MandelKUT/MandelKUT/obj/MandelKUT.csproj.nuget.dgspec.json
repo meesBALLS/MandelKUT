@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Meesv\\Bureaublad\\INFORMATICA_SHIT\\scripts\\saampjes\\MandelKUT\\MandelKUT\\MandelKUT\\MandelKUT.csproj": {}
+    "C:\\Users\\feste\\OneDrive - Nuovo\\Bureaublad\\fedde school\\universiteit\\leerjaar 1\\informatica c#\\impratief\\MandelKUT\\MandelKUT\\MandelKUT\\MandelKUT.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Meesv\\Bureaublad\\INFORMATICA_SHIT\\scripts\\saampjes\\MandelKUT\\MandelKUT\\MandelKUT\\MandelKUT.csproj": {
+    "C:\\Users\\feste\\OneDrive - Nuovo\\Bureaublad\\fedde school\\universiteit\\leerjaar 1\\informatica c#\\impratief\\MandelKUT\\MandelKUT\\MandelKUT\\MandelKUT.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Meesv\\Bureaublad\\INFORMATICA_SHIT\\scripts\\saampjes\\MandelKUT\\MandelKUT\\MandelKUT\\MandelKUT.csproj",
+        "projectUniqueName": "C:\\Users\\feste\\OneDrive - Nuovo\\Bureaublad\\fedde school\\universiteit\\leerjaar 1\\informatica c#\\impratief\\MandelKUT\\MandelKUT\\MandelKUT\\MandelKUT.csproj",
         "projectName": "MandelKUT",
-        "projectPath": "C:\\Users\\Meesv\\Bureaublad\\INFORMATICA_SHIT\\scripts\\saampjes\\MandelKUT\\MandelKUT\\MandelKUT\\MandelKUT.csproj",
-        "packagesPath": "C:\\Users\\Meesv\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Meesv\\Bureaublad\\INFORMATICA_SHIT\\scripts\\saampjes\\MandelKUT\\MandelKUT\\MandelKUT\\obj\\",
+        "projectPath": "C:\\Users\\feste\\OneDrive - Nuovo\\Bureaublad\\fedde school\\universiteit\\leerjaar 1\\informatica c#\\impratief\\MandelKUT\\MandelKUT\\MandelKUT\\MandelKUT.csproj",
+        "packagesPath": "C:\\Users\\feste\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\feste\\OneDrive - Nuovo\\Bureaublad\\fedde school\\universiteit\\leerjaar 1\\informatica c#\\impratief\\MandelKUT\\MandelKUT\\MandelKUT\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Meesv\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\feste\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
