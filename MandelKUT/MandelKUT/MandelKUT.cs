@@ -67,10 +67,10 @@ internal class MandelKUT : Form
     {
         if (int.TryParse(tSchaal.Text, out schaal) &&
             int.TryParse(tIter.Text, out iteraties) &&
-            int.TryParse(tX.Text, out centerx) && // Discard the result
-            int.TryParse(tY.Text, out centery))  // Discard the result
+            int.TryParse(tX.Text, out centerx) &&
+            int.TryParse(tY.Text, out centery)) 
         {
-            // Continue with your code
+           
             Invalidate();
         }
         else
