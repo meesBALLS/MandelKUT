@@ -13,7 +13,7 @@
     ],
     "additionalProbingPaths": [
       "C:\\Users\\Meesv\\.dotnet\\store\\|arch|\\|tfm|",
-      "C:\\Users\\feste\\.nuget\\packages"
+      "C:\\Users\\Meesv\\.nuget\\packages"
     ],
     "configProperties": {
       "Microsoft.NETCore.DotNetHostPolicy.SetAppPaths": true
