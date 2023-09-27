@@ -3,12 +3,15 @@ using System.Windows.Forms;
 using System;
 using System.Globalization;
 using System.Diagnostics;
-using System.Drawing.Drawing2D;
-
-
+/// <summary>
+/// importeren van de librarys die we hebben gebruikt voor de code
+/// </summary>
 
 internal class MandelKUT : Form
 {
+    /// <summary>
+    /// globale variable
+    /// </summary>
     int size = 1080;
     Point Muispunt = new Point(0, 0);
     Bitmap plaatje;
@@ -17,11 +20,12 @@ internal class MandelKUT : Form
     TextBox tX, tY, tSchaal, tIter;
     Label lbX, lbY, lbSchaal, lbIter;
     int schaal = 1, iteraties = 50 ;
-    double centerx, centery, factor;
-
+    double centerx, centery;
+   
 
     public MandelKUT()
     {
+        ///het aanmaken en het plaatsen van de tekstboxen en de knop
         lbX = new Label(); lbY = new Label();
         lbX.Location = new Point(170, 10); lbY.Location = new Point(170, 35);
         lbX.Size = new Size(15, 20); lbY.Size = new Size(15, 20);
@@ -40,11 +44,13 @@ internal class MandelKUT : Form
         lbIter.Location = new Point(20, 35); lbIter.Text = "max \naantal:";
         lbIter.Size = new Size(50, 40);
 
-        
+        ///het plaatje op de bitmap zetten
         
         plaatje = new Bitmap(size / 2, size / 2);
 
-        
+        ///de window gegevens me geven zoals de naam van het window, de groote
+        /// en de achtergront kleur
+        /// ook staan hier de eventhandelers 
        //plaatje.SetResolution(4*96.0F, 4*96.0F);
         this.Text = "MandelKUT";
         this.BackColor = Color.Aqua;
@@ -57,7 +63,11 @@ internal class MandelKUT : Form
 
         
     }
-
+    ///<summary>
+    ///het scrollen van de muiswiel controleren en daarna de iterraties omhoog gooien
+    ///en het nieuwe aantal iteraties laten zien in de iteratie teksbox en de mandelbrot verversen
+    ///</summary>
+    
     private void muiswiel(object sender, MouseEventArgs e)
     {
         if (e.Delta != 0)
@@ -66,24 +76,30 @@ internal class MandelKUT : Form
         tIter.Text = iteraties.ToString();
         Invalidate();
         }
+
             
     }
+    ///als de linker muis wordt ingedrukt wordt de positie opgeslagen en getoond in de tekstbox
+    ///nierna zoomen we in door de schaal te verhogen en geven we de muislocatie mee als middelpunt <summary>
+    ///als de rechtermuis wordt ingedrukt dan zoomen we uit met naar het vorige middelpunt
 
     void muisklik(object sender, MouseEventArgs mea)
     {
+
         if (mea.Button == MouseButtons.Left)
         {
             Muispunt = mea.Location;
             Console.WriteLine(Muispunt.ToString());
             double Muisx = MuisNaarMand(Muispunt.X) + centerx;
             double Muisy = MuisNaarMand(Muispunt.Y-180) + centery;
-           // muispunt.y -180 want het plaatje is 180 pixels naar beneden geschoven
+           
             tX.Text = (Muisx).ToString(); tY.Text = (-Muisy).ToString();
             UpdateCenter();
             schaal += 2*schaal;
             tSchaal.Text = schaal.ToString();
             
             Invalidate();
+            
         }
 
         if(mea.Button == MouseButtons.Right)
@@ -95,18 +111,33 @@ internal class MandelKUT : Form
 
     }
 
+    /// <summary>
+    /// de Muisnaarmand functie drukt de muislocatie uit muisklik om naar waardens tussen de 
+    /// -2 en 2 die corensponderen aan de locatie in de mandelbrot
+    /// </summary>
+    
     double MuisNaarMand(double i)
     {
         return ((i - (double)(size / 4)) / (double)(size / 8)) / schaal;
     }
 
+    /// <summary>
+    /// de functie UpdateCenter leest de tekst boxen af voor de locatie van het midden van 
+    /// de mandelbrot, omdat muisklik de coordinaten van de muisklik in de tekstboxen zet
+    /// kan deze functie ook de locatie van de muisklik achterhalen
+    /// </summary>
     public void UpdateCenter()
     {
         centerx = GetDouble(tX.Text, 0);
         centery = -GetDouble(tY.Text, 0);
-        
     }
 
+    /// <summary>
+    /// GetDouble kijkt of de text in de boxes van de x en y coordinaten getallen zijn
+    /// en zo niet geeft het 0 terug want dat is in deze code de megegeven waarde
+    /// anders geeft het de getallen uit de tekstbox terug
+    /// </summary>
+ 
     public static double GetDouble(string value, double defaultValue)
     {
         double result;
@@ -124,7 +155,14 @@ internal class MandelKUT : Form
     }
 
 
-
+    /// <summary>
+    /// deze functie calculeerd het mandelgetal met behulp van:
+    /// </summary>
+    /// <param name="ca">is het reele gedeelte van het complex getal a+bi
+    /// die in deze code dient als het x coordinaat van het middelpunt van de mandelbrot</param>
+    /// <param name="cb">het complexe gedeelte van a+bi </param>
+    /// <param name="max_iter">is het aantal keer dat deze functie het mandelgetal calculeerd</param>
+    /// <returns>het mandel getal op het punt (ca,cb)</returns>
     public int Divergerent(double ca, double cb, int max_iter = 50)
     {
         
@@ -145,7 +183,13 @@ internal class MandelKUT : Form
     }
 
 
-
+    /// <summary>
+    /// de funcite renderKnop_Click kijkt of de berekenknop wordt ingedrukt,
+    /// zoja? dan neemt hij het middelpunt (centerx,centery) door Getdouble en kijkt of alle
+    /// nodige waarde zijn megegeven, zo niet dan geeft hij een popup en zowel dan 
+    /// ververst hij het plaatje met Invalidate()
+    /// </summary>
+   
     void renderKnop_Click(object o, EventArgs e)
     {
         centerx = GetDouble(tX.Text, 0);
@@ -163,16 +207,20 @@ internal class MandelKUT : Form
         }
     }
 
+    /// <summary>
+    /// de functie Tekenen tekend het mandelbrot, dit doet hij door door alle pixels (i,j) te 
+    /// itereren en die m.b.v. MuisNaarMand om te zetten in coordinaten. die worden vervolgens
+    /// met het megegeven middelpunt berekend door Divergerent.
+    /// de uitkomst van het mandelbrotgetal van de pixel (i,j) wordt getekend met een kleur 
+    /// corresponderent met het mandelbrotgetal
+    /// </summary>
 
     public void Teken(object o, PaintEventArgs pea)
     {
         Stopwatch sw = Stopwatch.StartNew();
         Graphics gr = pea.Graphics;
 
-        factor = 20 * (1 + schaal);
-        //double tussenstap = size / (4 * factor);//
 
-        /*Color redColor = Color.FromArgb(255, 0, 0);*/
         for (int i = 0; i < plaatje.Width; i++)
         {
 
@@ -187,19 +235,17 @@ internal class MandelKUT : Form
 
                 
                 int q = Divergerent(x+centerx, y+centery, iteraties);
-                //y=y/factor-tussenstap//
+                
 
                 int hue = (int)(255 * q / iteraties);
                                             
 
 
-                /*Color color = Color.FromArgb(255, collor, collor, collor);
-
-                plaatje.SetPixel(i, j, color);*/
+                
                 if (q % 2 == 0)
                 {
                     plaatje.SetPixel(i, j, Color.FromArgb(0, hue, 0));
-                    //plaatje.SetPixel(i, j, Color.Black);
+                    
                 }
                 else
                 {
@@ -225,4 +271,3 @@ internal class MandelKUT : Form
     }
 }
 
-//fix my code pls   
