@@ -1,6 +1,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 using System;
+using System.Globalization;
 using System.Diagnostics;
 using System.Drawing.Drawing2D;
 
@@ -10,6 +11,7 @@ internal class MandelKUT : Form
     int size = 1080;
     Point Muispunt = new Point(0, 0);
     Bitmap plaatje;
+    PictureBox plaatjeDoos = new PictureBox();
     Button renderKnop;
     TextBox tX, tY, tSchaal, tIter;
     Label lbX, lbY, lbSchaal, lbIter;
@@ -38,31 +40,59 @@ internal class MandelKUT : Form
         lbIter.Size = new Size(50, 40);
 
         
+        
+        plaatje = new Bitmap(size / 2, size / 3);
 
-        plaatje = new Bitmap(size / 2, size / 2);
-        plaatje.SetResolution(96.0F, 96.0F);
+        
+       // plaatje.SetResolution(4*96.0F, 4*96.0F);
         this.Text = "MandelKUT";
         this.BackColor = Color.Aqua;
-        this.ClientSize = new Size(size, size);
-        this.Paint += this.Teken;
-
+        this.ClientSize = new Size(size/2, (int)(size / 1.5));
+        this.MinimumSize = new Size(size / 2, (int)(size / 1.5));
         renderKnop.Click += renderKnop_Click;
         this.MouseClick += muisklik;
+        this.Paint += this.Teken;
+
+        
     }
     void muisklik(object sender, MouseEventArgs mea)
     {
-        Muispunt = mea.Location;
-        Console.WriteLine(Muispunt.ToString());
-        double Muisx = (Muispunt.X-size) / factor;
-        double Muisy = (Muispunt.Y-size) / factor;
-        tX.Text = Muisx.ToString(); tY.Text = Muisy.ToString();
-        /*centerx = Muisx;
-        centery = Muisy;
-        Invalidate();*/
+        if (mea.Button == MouseButtons.Left)
+        {
+            Muispunt = mea.Location;
+            double Muisyding = (double)(Muispunt.Y - 240);
+            Console.WriteLine(Muisyding.ToString());
+            Console.WriteLine(Muispunt.ToString());
+            double Muisx = (((double)(Muispunt.X) - (double)(size/4)) / (double)(size/8))/schaal;
+            double Muisy = ((((double)(Muispunt.Y-240) - (double)(size / 3)) / (double)(size / 12))+2) / schaal;
+            tX.Text = Muisx.ToString(); tY.Text = (Muisy).ToString();
+            UpdateCenter();
+        }
+
     }
 
+    public void UpdateCenter()
+    {
+        centerx = GetDouble(tX.Text, 0);
+        centery = GetDouble(tY.Text, 0);
+        
+    }
 
+    public static double GetDouble(string value, double defaultValue)
+    {
+        double result;
 
+        // Try parsing in the current culture
+        if (!double.TryParse(value, System.Globalization.NumberStyles.Any, CultureInfo.CurrentCulture, out result) &&
+            // Then try in US english
+            !double.TryParse(value, System.Globalization.NumberStyles.Any, CultureInfo.GetCultureInfo("en-US"), out result) &&
+            // Then in neutral language
+            !double.TryParse(value, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out result))
+        {
+            result = defaultValue;
+        }
+        return result;
+    }
 
     public int Divergerent(double ca, double cb, int max_iter = 50)
     {
@@ -86,12 +116,13 @@ internal class MandelKUT : Form
 
     void renderKnop_Click(object o, EventArgs e)
     {
+        centerx = GetDouble(tX.Text, 0);
+        centery = GetDouble(tY.Text, 0);
         if (int.TryParse(tSchaal.Text, out schaal) &&
-            int.TryParse(tIter.Text, out iteraties) &&
-            double.TryParse(tX.Text, out centerx) &&
-            double.TryParse(tY.Text, out centery))
+            int.TryParse(tIter.Text, out iteraties) 
+            )
         {
-
+            Console.WriteLine(centerx.ToString());
             Invalidate();
         }
         else
@@ -105,7 +136,6 @@ internal class MandelKUT : Form
     {
         Stopwatch sw = Stopwatch.StartNew();
         Graphics gr = pea.Graphics;
-        gr.SmoothingMode = SmoothingMode.AntiAlias;
 
         factor = 20 * (1 + schaal);
         //double tussenstap = size / (4 * factor);//
@@ -121,11 +151,12 @@ internal class MandelKUT : Form
                 x = (x - size / 4) / factor + centerx;
                 
                 double y = j;
-                y = (y - size / 4) / factor + centery;
-                Color redColor = Color.FromArgb(255, 0, 0);
+                y = (y - size / 4/1.5) / factor + centery;
                 int q = Divergerent(x + centerx, y + centery, iteraties);
                 //y=y/factor-tussenstap//
 
+                int hue = (int)(255 * q / iteraties);
+                                            
 
 
                 /*Color color = Color.FromArgb(255, collor, collor, collor);
@@ -133,20 +164,19 @@ internal class MandelKUT : Form
                 plaatje.SetPixel(i, j, color);*/
                 if (q % 2 == 0)
                 {
-                    plaatje.SetPixel(i, j, Color.Pink);
+                    plaatje.SetPixel(i, j, Color.FromArgb(hue, q % 55, q % 255));
+                    //plaatje.SetPixel(i, j, Color.Black);
                 }
-                else if (q % 3 == 0)
+                else
                 {
-                    plaatje.SetPixel(i, j, Color.Aqua);
+                    plaatje.SetPixel(i, j, Color.FromArgb(0, q % 255, q % 155));
                 }
-                else if (q % 5 == 0)
-                {
-                    plaatje.SetPixel(i, j, Color.Black);
-                }
+
 
             }
         }
-        gr.DrawImage(plaatje, size / 16, size / 16);
+        gr.DrawImage(plaatje, 0, (int)((size / 1.5)/3));
+        
         sw.Stop();
         Console.WriteLine(sw.Elapsed.ToString());
         
