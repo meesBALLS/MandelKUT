@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing.Drawing2D;
 
 
+
 internal class MandelKUT : Form
 {
     int size = 1080;
@@ -44,29 +45,42 @@ internal class MandelKUT : Form
         plaatje = new Bitmap(size / 2, size / 2);
 
         
-       // plaatje.SetResolution(4*96.0F, 4*96.0F);
+       //plaatje.SetResolution(4*96.0F, 4*96.0F);
         this.Text = "MandelKUT";
         this.BackColor = Color.Aqua;
         this.ClientSize = new Size(size/2, (int)(size / 1.5));
         this.MinimumSize = new Size(size / 2, (int)(size / 1.5));
         renderKnop.Click += renderKnop_Click;
         this.MouseClick += muisklik;
+        this.MouseWheel += muiswiel;
         this.Paint += this.Teken;
 
         
     }
+
+    private void muiswiel(object sender, MouseEventArgs e)
+    {
+        if (e.Delta != 0)
+        { Console.Out.WriteLine(e.Delta);
+        iteraties += 50*(e.Delta / 120);
+        tIter.Text = iteraties.ToString();
+        Invalidate();
+        }
+            
+    }
+
     void muisklik(object sender, MouseEventArgs mea)
     {
         if (mea.Button == MouseButtons.Left)
         {
             Muispunt = mea.Location;
             Console.WriteLine(Muispunt.ToString());
-            double Muisx = MuisNaarMand(Muispunt.X);
-            double Muisy = MuisNaarMand(Muispunt.Y-180);
+            double Muisx = MuisNaarMand(Muispunt.X) + centerx;
+            double Muisy = MuisNaarMand(Muispunt.Y-180) + centery;
            // muispunt.y -180 want het plaatje is 180 pixels naar beneden geschoven
             tX.Text = (Muisx).ToString(); tY.Text = (-Muisy).ToString();
             UpdateCenter();
-            schaal += 2;
+            schaal += 2*schaal;
             tSchaal.Text = schaal.ToString();
             
             Invalidate();
@@ -74,7 +88,7 @@ internal class MandelKUT : Form
 
         if(mea.Button == MouseButtons.Right)
         {
-            schaal -= 2;
+            schaal -= 2*schaal;
             tSchaal.Text = schaal.ToString();
             Invalidate();
         }
@@ -83,7 +97,7 @@ internal class MandelKUT : Form
 
     double MuisNaarMand(double i)
     {
-        return (((double)(i) - (double)(size / 4)) / (double)(size / 8)) / schaal;
+        return ((i - (double)(size / 4)) / (double)(size / 8)) / schaal;
     }
 
     public void UpdateCenter()
@@ -113,6 +127,7 @@ internal class MandelKUT : Form
 
     public int Divergerent(double ca, double cb, int max_iter = 50)
     {
+        
         double za = 0;
         double zb = 0;
         for (int i = 0; i < max_iter; i++)
@@ -165,13 +180,13 @@ internal class MandelKUT : Form
             {
                 
                 double x = i;
-                x = (x - size / 4) / factor;
-                x += centerx;
+                x = MuisNaarMand(x);
+
                 double y = j;
-                y = (y - size / 4) / factor;
-                y += centery;
+                y = MuisNaarMand(y);
+
                 
-                int q = Divergerent(x , y, iteraties);
+                int q = Divergerent(x+centerx, y+centery, iteraties);
                 //y=y/factor-tussenstap//
 
                 int hue = (int)(255 * q / iteraties);
@@ -183,17 +198,18 @@ internal class MandelKUT : Form
                 plaatje.SetPixel(i, j, color);*/
                 if (q % 2 == 0)
                 {
-                    plaatje.SetPixel(i, j, Color.FromArgb(hue, hue, 0));
+                    plaatje.SetPixel(i, j, Color.FromArgb(0, hue, 0));
                     //plaatje.SetPixel(i, j, Color.Black);
                 }
                 else
                 {
-                    plaatje.SetPixel(i, j, Color.FromArgb(0, q % 255, q % 155));
+                    plaatje.SetPixel(i, j, Color.FromArgb(0, hue+1, 0));
                 }
 
 
             }
         }
+        plaatje.SetPixel(plaatje.Width / 2, plaatje.Height / 2, Color.White);
         gr.DrawImage(plaatje, 0, (int)((size/2)/3));
         
         sw.Stop();
@@ -208,3 +224,5 @@ internal class MandelKUT : Form
         Application.Run(new MandelKUT());
     }
 }
+
+//fix my code pls   
