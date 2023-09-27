@@ -41,7 +41,7 @@ internal class MandelKUT : Form
 
         
         
-        plaatje = new Bitmap(size / 2, size / 3);
+        plaatje = new Bitmap(size / 2, size / 2);
 
         
        // plaatje.SetResolution(4*96.0F, 4*96.0F);
@@ -60,21 +60,36 @@ internal class MandelKUT : Form
         if (mea.Button == MouseButtons.Left)
         {
             Muispunt = mea.Location;
-            double Muisyding = (double)(Muispunt.Y - 240);
-            Console.WriteLine(Muisyding.ToString());
             Console.WriteLine(Muispunt.ToString());
-            double Muisx = (((double)(Muispunt.X) - (double)(size/4)) / (double)(size/8))/schaal;
-            double Muisy = ((((double)(Muispunt.Y-240) - (double)(size / 3)) / (double)(size / 12))+2) / schaal;
-            tX.Text = Muisx.ToString(); tY.Text = (Muisy).ToString();
+            double Muisx = MuisNaarMand(Muispunt.X);
+            double Muisy = MuisNaarMand(Muispunt.Y-180);
+           // muispunt.y -180 want het plaatje is 180 pixels naar beneden geschoven
+            tX.Text = (Muisx).ToString(); tY.Text = (-Muisy).ToString();
             UpdateCenter();
+            schaal += 2;
+            tSchaal.Text = schaal.ToString();
+            
+            Invalidate();
         }
 
+        if(mea.Button == MouseButtons.Right)
+        {
+            schaal -= 2;
+            tSchaal.Text = schaal.ToString();
+            Invalidate();
+        }
+
+    }
+
+    double MuisNaarMand(double i)
+    {
+        return (((double)(i) - (double)(size / 4)) / (double)(size / 8)) / schaal;
     }
 
     public void UpdateCenter()
     {
         centerx = GetDouble(tX.Text, 0);
-        centery = GetDouble(tY.Text, 0);
+        centery = -GetDouble(tY.Text, 0);
         
     }
 
@@ -93,6 +108,8 @@ internal class MandelKUT : Form
         }
         return result;
     }
+
+
 
     public int Divergerent(double ca, double cb, int max_iter = 50)
     {
@@ -117,7 +134,7 @@ internal class MandelKUT : Form
     void renderKnop_Click(object o, EventArgs e)
     {
         centerx = GetDouble(tX.Text, 0);
-        centery = GetDouble(tY.Text, 0);
+        centery = -GetDouble(tY.Text, 0);
         if (int.TryParse(tSchaal.Text, out schaal) &&
             int.TryParse(tIter.Text, out iteraties) 
             )
@@ -148,11 +165,13 @@ internal class MandelKUT : Form
             {
                 
                 double x = i;
-                x = (x - size / 4) / factor + centerx;
-                
+                x = (x - size / 4) / factor;
+                x += centerx;
                 double y = j;
-                y = (y - size / 4/1.5) / factor + centery;
-                int q = Divergerent(x + centerx, y + centery, iteraties);
+                y = (y - size / 4) / factor;
+                y += centery;
+                
+                int q = Divergerent(x , y, iteraties);
                 //y=y/factor-tussenstap//
 
                 int hue = (int)(255 * q / iteraties);
@@ -164,7 +183,7 @@ internal class MandelKUT : Form
                 plaatje.SetPixel(i, j, color);*/
                 if (q % 2 == 0)
                 {
-                    plaatje.SetPixel(i, j, Color.FromArgb(hue, q % 55, q % 255));
+                    plaatje.SetPixel(i, j, Color.FromArgb(hue, hue, 0));
                     //plaatje.SetPixel(i, j, Color.Black);
                 }
                 else
@@ -175,7 +194,7 @@ internal class MandelKUT : Form
 
             }
         }
-        gr.DrawImage(plaatje, 0, (int)((size / 1.5)/3));
+        gr.DrawImage(plaatje, 0, (int)((size/2)/3));
         
         sw.Stop();
         Console.WriteLine(sw.Elapsed.ToString());
