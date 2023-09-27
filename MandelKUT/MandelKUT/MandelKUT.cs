@@ -20,9 +20,10 @@ internal class MandelKUT : Form
     Button renderKnop;
     TextBox tX, tY, tSchaal, tIter;
     Label lbX, lbY, lbSchaal, lbIter, renderTijd;
-    int schaal = 1, iteraties = 50, kleur=1;
+    int iteraties = 50, kleur = 1;
+    float schaal = 1;
     double centerx, centery;
-   
+
 
     public MandelKUT()
     {
@@ -38,32 +39,32 @@ internal class MandelKUT : Form
         Controls.Add(tX); Controls.Add(tY);
 
         string[] raamwerks = new string[] { "Raamwerk 1", "Raamwerk 2", "Raamwerk 3" };
-        ComboBox raamwerkDropdown = new ComboBox(); Controls.Add(raamwerkDropdown); raamwerkDropdown.Location = new Point(60, 80);   
+        ComboBox raamwerkDropdown = new ComboBox(); Controls.Add(raamwerkDropdown); raamwerkDropdown.Location = new Point(60, 80);
         raamwerkDropdown.DataSource = raamwerks;
 
         string[] kleuren = new string[] { "Kleur 1", "Kleur 2", "Kleur 3" };
         ComboBox kleurenDropdown = new ComboBox(); Controls.Add(kleurenDropdown); kleurenDropdown.Location = new Point(190, 80);
         kleurenDropdown.DataSource = kleuren;
-        
+
 
         tSchaal = new TextBox(); Controls.Add(tSchaal); tIter = new TextBox(); Controls.Add(tIter); tIter.Location = new Point(60, 45); tSchaal.Location = new Point(60, 10);
         renderKnop = new Button(); Controls.Add(renderKnop); renderKnop.Location = new Point(60, 110); renderKnop.Text = "Bereken";
-        renderTijd = new Label(); Controls.Add(renderTijd); renderTijd.Location = new Point(size/4, 110); renderTijd.Text = "Render tijd:"; renderTijd.Size = new Size(150, 50);
+        renderTijd = new Label(); Controls.Add(renderTijd); renderTijd.Location = new Point(size / 4, 110); renderTijd.Text = "Render tijd:"; renderTijd.Size = new Size(150, 50);
         lbSchaal = new Label(); Controls.Add(lbSchaal); lbIter = new Label(); Controls.Add(lbIter);
         lbSchaal.Location = new Point(20, 10); lbSchaal.Text = "schaal:";
         lbIter.Location = new Point(20, 35); lbIter.Text = "max \naantal:";
         lbIter.Size = new Size(50, 40);
 
         ///het plaatje definieren
-        
+
         plaatje = new Bitmap(size / 2, size / 2);
 
         ///de window gegevens me geven zoals de naam van het window, de groote
         /// en de achtergrond kleur
         /// ook staan hier de eventhandlers 
-        /// 
+
         this.Text = "MandelKUT";
-        this.ClientSize = new Size(size/2, (int)(size / 1.5));
+        this.ClientSize = new Size(size / 2, (int)(size / 1.5));
         this.MinimumSize = new Size(size / 2, (int)(size / 1.5));
         raamwerkDropdown.SelectedIndexChanged += DropdownSelectieVeranderd;
         kleurenDropdown.SelectedIndexChanged += DropdownKleurSelectieVeranderd;
@@ -72,27 +73,27 @@ internal class MandelKUT : Form
         this.MouseWheel += muiswiel;
         this.Paint += this.Teken;
 
-        
+
     }
     ///<summary>
     ///het scrollen van de muiswiel controleren en daarna de iterraties omhoog gooien
     ///en het nieuwe aantal iteraties laten zien in de iteratie textbox en de Mandelbrot verversen
     ///</summary>
-    
+
     private void muiswiel(object sender, MouseEventArgs e)
     {
         if (e.Delta != 0)
-        { Console.Out.WriteLine(e.Delta);
-        iteraties += 50*(e.Delta / 120);
-        tIter.Text = iteraties.ToString();
-        Invalidate();
+        {
+            Console.Out.WriteLine(e.Delta);
+            iteraties += 50 * (e.Delta / 120);
+            tIter.Text = iteraties.ToString();
+            Invalidate();
         }
-
-            
     }
-    ///als de linker muis wordt ingedrukt wordt de positie opgeslagen en getoond in de tekstbox
-    ///nierna zoomen we in door de schaal te verhogen en geven we de muislocatie mee als middelpunt <summary>
-    ///als de rechtermuis wordt ingedrukt dan zoomen we uit met naar het vorige middelpunt
+
+    ///<summary>als de linker muis wordt ingedrukt wordt de positie opgeslagen en getoond in de tekstbox
+    ///nierna zoomen we in door de schaal te verhogen en geven we de muislocatie mee als middelpunt
+    ///als de rechtermuis wordt ingedrukt dan zoomen we uit met naar het vorige middelpunt </summary>
 
     void muisklik(object sender, MouseEventArgs mea)
     {
@@ -101,20 +102,20 @@ internal class MandelKUT : Form
         {
             Muispunt = mea.Location;
             double Muisx = MuisNaarMand(Muispunt.X) + centerx;
-            double Muisy = MuisNaarMand(Muispunt.Y-180) + centery;
-           
+            double Muisy = MuisNaarMand(Muispunt.Y - 180) + centery;
+
             tX.Text = (Muisx).ToString(); tY.Text = (-Muisy).ToString();
             UpdateCenter();
-            schaal += 2*schaal;
+            schaal += 2 * schaal;
             tSchaal.Text = schaal.ToString();
-            
+
             Invalidate();
-            
+
         }
 
-        if(mea.Button == MouseButtons.Right)
+        if (mea.Button == MouseButtons.Right)
         {
-            schaal -= schaal/2;
+            schaal -= schaal / 2;
             tSchaal.Text = schaal.ToString();
             Invalidate();
         }
@@ -125,10 +126,10 @@ internal class MandelKUT : Form
     /// de Muisnaarmand functie drukt de muislocatie uit muisklik om naar waardens tussen de 
     /// -2 en 2 die corensponderen aan de locatie in de mandelbrot
     /// </summary>
-    
+
     double MuisNaarMand(double i)
     {
-        return ((i - (double)(size / 4)) / (double)(size / 8)) / schaal;
+        return ((i - (size / 4)) / (size / 8)) / schaal;
     }
 
     /// <summary>
@@ -147,22 +148,26 @@ internal class MandelKUT : Form
     /// en zo niet geeft het 0 terug want dat is in deze code de megegeven waarde
     /// anders geeft het de getallen uit de tekstbox terug
     /// </summary>
- 
+
     public static double GetDouble(string value, double defaultValue)
     {
         double result;
 
-        // Try parsing in the current culture
-        if (!double.TryParse(value, CultureInfo.CurrentCulture, out result) &&
-            // Then try in US english
+        // Probeer eerst te parsen met de huidige cultuurinstellingen
+        if (!double.TryParse(value, System.Globalization.NumberStyles.Any, CultureInfo.CurrentCulture, out result) &&
             !double.TryParse(value, System.Globalization.NumberStyles.Any, CultureInfo.GetCultureInfo("en-US"), out result) &&
-            // Then in neutral language
             !double.TryParse(value, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out result))
         {
-            result = defaultValue;
+            // Als de conversie met de huidige en-US en InvariantCulture-instellingen mislukt, probeer dan zonder de groepsscheiding
+            if (!double.TryParse(value.Replace(",", "."), System.Globalization.NumberStyles.Any, CultureInfo.CurrentCulture, out result))
+            {
+                result = defaultValue; // Als alle pogingen mislukken, gebruik de standaardwaarde
+            }
         }
+
         return result;
     }
+
 
 
     /// <summary>
@@ -175,7 +180,7 @@ internal class MandelKUT : Form
     /// <returns>het mandel getal op het punt (ca,cb)</returns>
     public int Divergerent(double ca, double cb, int max_iter = 50)
     {
-        
+
         double za = 0;
         double zb = 0;
         double za2 = 0; double zb2 = 0;
@@ -186,7 +191,7 @@ internal class MandelKUT : Form
             {
                 return i;
             }
-            zb = (za+za) * zb + cb;
+            zb = (za + za) * zb + cb;
             za = za2 - zb2 + ca;
             za2 = za * za;
             zb2 = zb * zb;
@@ -205,13 +210,13 @@ internal class MandelKUT : Form
     /// nodige waarde zijn megegeven, zo niet dan geeft hij een popup en zowel dan 
     /// ververst hij het plaatje met Invalidate()
     /// </summary>
-   
+
     void renderKnop_Click(object o, EventArgs e)
     {
         centerx = GetDouble(tX.Text, 0);
         centery = -GetDouble(tY.Text, 0);
-        if (int.TryParse(tSchaal.Text, out schaal) &&
-            int.TryParse(tIter.Text, out iteraties) 
+        if (float.TryParse(tSchaal.Text, out schaal) &&
+            int.TryParse(tIter.Text, out iteraties)
             )
         {
             Console.WriteLine(centerx.ToString());
@@ -222,32 +227,47 @@ internal class MandelKUT : Form
             MessageBox.Show("Please enter integers in the left two boxes.");
         }
     }
+
+    /// <summary>
+    /// deze functie geeft de gebuiker de optie om vantevoren ingestelde waarden
+    /// te kiezen om een bepaalde mandelbrot te krijgen, dit doen we met een dropdown
+    /// menu en de geselecteerde optie zet automatisch de juiste waarde in de teskbozen
+    /// </summary>
+
     private void DropdownSelectieVeranderd(object sender, EventArgs e)
     {
         var selectedraamwerk = ((ComboBox)sender).SelectedItem.ToString();
         if (selectedraamwerk == "Raamwerk 1")
         {
-            tX.Text = "-4,621603e-1";
-            tY.Text = "-5,823998e-1";
-            tSchaal.Text = "20000";
-            tIter.Text = "10000";
+            tX.Text = "-4.621603e-1";
+            tY.Text = "-5.823998e-1";
+            tX.Text = GetDouble(tX.Text, 0).ToString();
+            tY.Text = GetDouble(tY.Text, 0).ToString();
+            tSchaal.Text = "2";
+            tIter.Text = "1000";
         }
         else if (selectedraamwerk == "Raamwerk 2")
         {
-            tX.Text = "125";
-            tY.Text = "75";
+            tX.Text = "1.25";
+            tY.Text = "0.75";
             tSchaal.Text = "0.5";
             tIter.Text = "100";
         }
         else if (selectedraamwerk == "Raamwerk 3")
         {
-            tX.Text = "150";
-            tY.Text = "50";
+            tX.Text = "1.50";
+            tY.Text = ".50";
             tSchaal.Text = "0.1";
             tIter.Text = "150";
         }
         Invalidate();
     }
+
+    /// <summary>
+    /// deze functie geeft de gebruiker de optie om de kleuren van de mandelbrot te
+    /// veranderen, ook dit doen we met een dropdown menu die de kleuren in de setpixel
+    /// in de functie Teken aanpast
+    /// </summary>
 
     private void DropdownKleurSelectieVeranderd(object sender, EventArgs e)
     {
@@ -272,7 +292,10 @@ internal class MandelKUT : Form
     /// itereren en die m.b.v. MuisNaarMand om te zetten in coordinaten. die worden vervolgens
     /// met het megegeven middelpunt berekend door Divergerent.
     /// de uitkomst van het mandelbrotgetal van de pixel (i,j) wordt getekend met een kleur 
-    /// corresponderent met het mandelbrotgetal
+    /// corresponderent met het mandelbrotgetal.
+    /// we doen dit door lockbits te callen die toegang geeft tot de ARGB waardens van de pixels
+    /// we zetten die in een byte-array te zetten die we later aanpassen met het corrensponderende
+    /// kleurenpalet gekozen door de gebruiker die we daarna omzetten tot een plaatje
     /// </summary>
 
     public void Teken(object o, PaintEventArgs pea)
@@ -301,14 +324,14 @@ internal class MandelKUT : Form
 
                 int index = j * bitmapData.Stride + i * 4;
 
-                if (kleur==1)
+                if (kleur == 1)
                 {
                     rgbValues[index] = (byte)(q % 32 * 8);
                     rgbValues[index + 1] = (byte)(q % 16 * 16);
                     rgbValues[index + 2] = (byte)(q % 8 * 32);
                     rgbValues[index + 3] = 255;
                 }
-                else if (kleur==2)
+                else if (kleur == 2)
                 {
                     rgbValues[index] = (byte)(q % 2 * 128);
                     rgbValues[index + 1] = (byte)(q % 16 * 16);
@@ -330,17 +353,15 @@ internal class MandelKUT : Form
         plaatje.UnlockBits(bitmapData);
 
 
-    
-
-        gr.DrawImage(plaatje, 0, (int)((size/2)/3));
+        gr.DrawImage(plaatje, 0, (int)((size / 2) / 3));
         sw.Stop();
         renderTijd.Text = "render tijd: " + sw.Elapsed.ToString();
 
-        
+
     }
 
 
-    
+
 
 
     public static void Main()
