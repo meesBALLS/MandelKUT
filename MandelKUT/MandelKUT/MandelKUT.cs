@@ -1,8 +1,10 @@
 using System.Drawing;
 using System.Windows.Forms;
 using System;
+using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.Diagnostics;
+using System.Drawing.Imaging;
 /// <summary>
 /// importeren van de librarys die we hebben gebruikt voor de code
 /// </summary>
@@ -15,17 +17,16 @@ internal class MandelKUT : Form
     int size = 1080;
     Point Muispunt = new Point(0, 0);
     Bitmap plaatje;
-    PictureBox plaatjeDoos = new PictureBox();
     Button renderKnop;
     TextBox tX, tY, tSchaal, tIter;
-    Label lbX, lbY, lbSchaal, lbIter;
-    int schaal = 1, iteraties = 50 ;
+    Label lbX, lbY, lbSchaal, lbIter, renderTijd;
+    int schaal = 1, iteraties = 50, kleur=1;
     double centerx, centery;
    
 
     public MandelKUT()
     {
-        ///het aanmaken en het plaatsen van de tekstboxen en de knop
+        ///het aanmaken en het plaatsen van de tekstboxen, de dropdown en de knop
         lbX = new Label(); lbY = new Label();
         lbX.Location = new Point(170, 10); lbY.Location = new Point(170, 35);
         lbX.Size = new Size(15, 20); lbY.Size = new Size(15, 20);
@@ -36,26 +37,36 @@ internal class MandelKUT : Form
         tX.Location = new Point(190, 10); tY.Location = new Point(190, 35);
         Controls.Add(tX); Controls.Add(tY);
 
+        string[] raamwerks = new string[] { "Raamwerk 1", "Raamwerk 2", "Raamwerk 3" };
+        ComboBox raamwerkDropdown = new ComboBox(); Controls.Add(raamwerkDropdown); raamwerkDropdown.Location = new Point(60, 80);   
+        raamwerkDropdown.DataSource = raamwerks;
+
+        string[] kleuren = new string[] { "Kleur 1", "Kleur 2", "Kleur 3" };
+        ComboBox kleurenDropdown = new ComboBox(); Controls.Add(kleurenDropdown); kleurenDropdown.Location = new Point(190, 80);
+        kleurenDropdown.DataSource = kleuren;
+        
 
         tSchaal = new TextBox(); Controls.Add(tSchaal); tIter = new TextBox(); Controls.Add(tIter); tIter.Location = new Point(60, 45); tSchaal.Location = new Point(60, 10);
-        renderKnop = new Button(); Controls.Add(renderKnop); renderKnop.Location = new Point(60, 110); renderKnop.Text = "bereken";
+        renderKnop = new Button(); Controls.Add(renderKnop); renderKnop.Location = new Point(60, 110); renderKnop.Text = "Bereken";
+        renderTijd = new Label(); Controls.Add(renderTijd); renderTijd.Location = new Point(size/4, 110); renderTijd.Text = "Render tijd:"; renderTijd.Size = new Size(150, 50);
         lbSchaal = new Label(); Controls.Add(lbSchaal); lbIter = new Label(); Controls.Add(lbIter);
         lbSchaal.Location = new Point(20, 10); lbSchaal.Text = "schaal:";
         lbIter.Location = new Point(20, 35); lbIter.Text = "max \naantal:";
         lbIter.Size = new Size(50, 40);
 
-        ///het plaatje op de bitmap zetten
+        ///het plaatje definieren
         
         plaatje = new Bitmap(size / 2, size / 2);
 
         ///de window gegevens me geven zoals de naam van het window, de groote
-        /// en de achtergront kleur
-        /// ook staan hier de eventhandelers 
-       //plaatje.SetResolution(4*96.0F, 4*96.0F);
+        /// en de achtergrond kleur
+        /// ook staan hier de eventhandlers 
+        /// 
         this.Text = "MandelKUT";
-        this.BackColor = Color.Aqua;
         this.ClientSize = new Size(size/2, (int)(size / 1.5));
         this.MinimumSize = new Size(size / 2, (int)(size / 1.5));
+        raamwerkDropdown.SelectedIndexChanged += DropdownSelectieVeranderd;
+        kleurenDropdown.SelectedIndexChanged += DropdownKleurSelectieVeranderd;
         renderKnop.Click += renderKnop_Click;
         this.MouseClick += muisklik;
         this.MouseWheel += muiswiel;
@@ -65,7 +76,7 @@ internal class MandelKUT : Form
     }
     ///<summary>
     ///het scrollen van de muiswiel controleren en daarna de iterraties omhoog gooien
-    ///en het nieuwe aantal iteraties laten zien in de iteratie teksbox en de mandelbrot verversen
+    ///en het nieuwe aantal iteraties laten zien in de iteratie textbox en de Mandelbrot verversen
     ///</summary>
     
     private void muiswiel(object sender, MouseEventArgs e)
@@ -89,7 +100,6 @@ internal class MandelKUT : Form
         if (mea.Button == MouseButtons.Left)
         {
             Muispunt = mea.Location;
-            Console.WriteLine(Muispunt.ToString());
             double Muisx = MuisNaarMand(Muispunt.X) + centerx;
             double Muisy = MuisNaarMand(Muispunt.Y-180) + centery;
            
@@ -104,7 +114,7 @@ internal class MandelKUT : Form
 
         if(mea.Button == MouseButtons.Right)
         {
-            schaal -= 2*schaal;
+            schaal -= schaal/2;
             tSchaal.Text = schaal.ToString();
             Invalidate();
         }
@@ -168,16 +178,22 @@ internal class MandelKUT : Form
         
         double za = 0;
         double zb = 0;
+        double za2 = 0; double zb2 = 0;
         for (int i = 0; i < max_iter; i++)
         {
             ///als het kleiner is dan 4 stopt het anders gaat het door met calculeren
-            if (za * za + zb * zb > 4)
+            if (za2 + zb2 > 4)
             {
                 return i;
             }
-            double tempZa = za;
-            za = za * za - zb * zb + ca;
-            zb = 2 * tempZa * zb + cb;
+            zb = (za+za) * zb + cb;
+            za = za2 - zb2 + ca;
+            za2 = za * za;
+            zb2 = zb * zb;
+            //deze code is sneller dan de code hieronder
+            //double tempZa = za;
+            //za = za * za - zb * zb + ca;
+            //zb = 2 * tempZa * zb + cb;
         }
         return 0;
     }
@@ -203,8 +219,52 @@ internal class MandelKUT : Form
         }
         else
         {
-            MessageBox.Show("Please enter integers in all the boxes.");
+            MessageBox.Show("Please enter integers in the left two boxes.");
         }
+    }
+    private void DropdownSelectieVeranderd(object sender, EventArgs e)
+    {
+        var selectedraamwerk = ((ComboBox)sender).SelectedItem.ToString();
+        if (selectedraamwerk == "Raamwerk 1")
+        {
+            tX.Text = "-4,621603e-1";
+            tY.Text = "-5,823998e-1";
+            tSchaal.Text = "20000";
+            tIter.Text = "10000";
+        }
+        else if (selectedraamwerk == "Raamwerk 2")
+        {
+            tX.Text = "125";
+            tY.Text = "75";
+            tSchaal.Text = "0.5";
+            tIter.Text = "100";
+        }
+        else if (selectedraamwerk == "Raamwerk 3")
+        {
+            tX.Text = "150";
+            tY.Text = "50";
+            tSchaal.Text = "0.1";
+            tIter.Text = "150";
+        }
+        Invalidate();
+    }
+
+    private void DropdownKleurSelectieVeranderd(object sender, EventArgs e)
+    {
+        var selectedkleur = ((ComboBox)sender).SelectedItem.ToString();
+        if (selectedkleur == "Kleur 1")
+        {
+            kleur = 1;
+        }
+        else if (selectedkleur == "Kleur 2")
+        {
+            kleur = 2;
+        }
+        else if (selectedkleur == "Kleur 3")
+        {
+            kleur = 3;
+        }
+        Invalidate();
     }
 
     /// <summary>
@@ -221,48 +281,66 @@ internal class MandelKUT : Form
         Graphics gr = pea.Graphics;
 
 
+        BitmapData bitmapData = plaatje.LockBits(new Rectangle(0, 0, plaatje.Width, plaatje.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+        IntPtr ptr = bitmapData.Scan0;
+        int numBytes = bitmapData.Stride * plaatje.Height;
+        byte[] rgbValues = new byte[numBytes];
+        System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, numBytes);
+
         for (int i = 0; i < plaatje.Width; i++)
         {
-
             for (int j = 0; j < plaatje.Height; j++)
             {
-                
                 double x = i;
                 x = MuisNaarMand(x);
 
                 double y = j;
                 y = MuisNaarMand(y);
 
-                
-                int q = Divergerent(x+centerx, y+centery, iteraties);
-                
+                int q = Divergerent(x + centerx, y + centery, iteraties);
 
-                int hue = (int)(255 * q / iteraties);
-                                            
+                int index = j * bitmapData.Stride + i * 4;
 
-
-                
-                if (q % 2 == 0)
+                if (kleur==1)
                 {
-                    plaatje.SetPixel(i, j, Color.FromArgb(0, hue, 0));
-                    
+                    rgbValues[index] = (byte)(q % 32 * 8);
+                    rgbValues[index + 1] = (byte)(q % 16 * 16);
+                    rgbValues[index + 2] = (byte)(q % 8 * 32);
+                    rgbValues[index + 3] = 255;
+                }
+                else if (kleur==2)
+                {
+                    rgbValues[index] = (byte)(q % 2 * 128);
+                    rgbValues[index + 1] = (byte)(q % 16 * 16);
+                    rgbValues[index + 2] = (byte)(q % 128 * 2);
+                    rgbValues[index + 3] = 255;
                 }
                 else
                 {
-                    plaatje.SetPixel(i, j, Color.FromArgb(0, hue+1, 0));
+                    rgbValues[index] = (byte)(q % 5 * 51);
+                    rgbValues[index + 1] = (byte)(q % 16 * 8);
+                    rgbValues[index + 2] = (byte)(q % 32 * 8);
+                    rgbValues[index + 3] = 255;
                 }
-
 
             }
         }
-        plaatje.SetPixel(plaatje.Width / 2, plaatje.Height / 2, Color.White);
+
+        System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, numBytes);
+        plaatje.UnlockBits(bitmapData);
+
+
+    
+
         gr.DrawImage(plaatje, 0, (int)((size/2)/3));
-        
         sw.Stop();
-        Console.WriteLine(sw.Elapsed.ToString());
+        renderTijd.Text = "render tijd: " + sw.Elapsed.ToString();
+
         
     }
 
+
+    
 
 
     public static void Main()
